@@ -37,22 +37,23 @@ response = client.store 'http://www.example.com/img.jpg'
 
 ### Removing a file
 ```ruby
-response = client.remove url_to_file_picker_file
+response = client.remove url_or_handle_name
 ```
 
 ### Read operations
 ```ruby
-url = client.convert_url url_to_file_picker_file, w: 100, h: 100
-url = client.convert_url url_to_file_picker_file, {w: 100, h: 100}, expiry: 10.minutes.from_now.to_i
+url = client.convert_url url_or_handle_name, w: 100, h: 100
+url = client.convert_url url_or_handle_name, {w: 100, h: 100}, expiry: 10.minutes.from_now.to_i
 
-url = client.retrieve_url url_to_file_picker_file
-url = client.retrieve_url url_to_file_picker_file, expiry: 10.minutes.from_now.to_i
+# Adds policy and signature, if secret given when client was created.
+url = client.retrieve_url url_or_handle_name
+url = client.retrieve_url url_or_handle_name, expiry: 10.minutes.from_now.to_i
 ```
 
 
 ## Contributing
 
-1. Fork it ( http://github.com/<my-github-username>/ink_file_picker/fork )
+1. Fork it (https://github.com/Skalar/ink_file_picker/fork)
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
