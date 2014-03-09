@@ -12,8 +12,10 @@ module InkFilePicker
     end
 
 
+
     def policy(attributes)
       attributes.reverse_merge!(
+        secret: configuration.secret,
         expiry: Time.now.to_i + configuration.default_expiry
       )
 
