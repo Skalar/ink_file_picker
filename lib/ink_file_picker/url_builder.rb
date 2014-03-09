@@ -1,11 +1,11 @@
 module InkFilePicker
   class UrlBuilder
+    include Assignable
+
     attr_accessor :file_url, :action, :params
 
-    def initialize(file_url, action, params)
-      self.file_url = file_url
-      self.action = action
-      self.params = params
+    def initialize(attributes = {})
+      assign attributes
     end
 
     def url

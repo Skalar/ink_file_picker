@@ -6,18 +6,22 @@ module InkFilePicker
       self.configuration = Configuration.new configuration
     end
 
-    def convert(handle_or_url, params = {}, policy = {})
-      handle = FileHandle.new handle_or_url, configuration.cdn_url
-      params = params.merge policy(call: 'convert', handle: handle.handle, expiry: policy[:expiry]).to_hash
 
-      UrlBuilder.new(handle.url, :convert, params).to_s
+    def convert(handle_or_url, params = {}, policy_attributes = {})
+      file_handle = FileHandle.new handle_or_url, configuration.cdn_url
+
+      add_policy_to params, from: policy_attributes, ensure_included: {handle: file_handle.handle, call: 'convert'}
+
+      UrlBuilder.new(file_url: file_handle.url, action: :convert, params: params).to_s
     end
 
-    def retrieve(handle_or_url, policy = {})
-      handle = FileHandle.new handle_or_url, configuration.cdn_url
-      params = policy(call: 'read', handle: handle.handle, expiry: policy[:expiry]).to_hash
+    def retrieve(handle_or_url, policy_attributes = {})
+      file_handle = FileHandle.new handle_or_url, configuration.cdn_url
 
-      UrlBuilder.new(handle.url, nil, params).to_s
+      params = {}
+      add_policy_to params, from: policy_attributes, ensure_included: {handle: file_handle.handle, call: 'read'}
+
+      UrlBuilder.new(file_url: file_handle.url, params: params).to_s
     end
 
 
@@ -31,6 +35,16 @@ module InkFilePicker
       )
 
       Policy.new attributes
+    end
+
+
+
+
+    private
+
+    def add_policy_to(params, options = {})
+      policy_attributes = options[:from].merge options[:ensure_included]
+      params.merge! policy(policy_attributes)
     end
   end
 end
