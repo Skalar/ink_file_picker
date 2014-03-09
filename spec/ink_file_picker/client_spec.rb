@@ -10,6 +10,26 @@ describe InkFilePicker::Client do
 
   subject { described_class.new attributes }
 
+
+  describe "#convert" do
+    let(:handle) { 'PHqJHHWpRAGUsIfyx0og' }
+    let(:url) { "https://www.filepicker.io/api/file/#{handle}" }
+
+    context "without secret" do
+      before { subject.configuration.secret = nil }
+
+      it "builds expected convert URL when given a URL" do
+        expect(subject.convert url, w: 300, h: 200).to eq 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og/convert?h=200&w=300'
+      end
+
+      it "builds expected convert URL when given a handle" do
+        expect(subject.convert handle, w: 300, h: 200).to eq 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og/convert?h=200&w=300'
+      end
+    end
+  end
+
+
+
   describe "#configuration" do
     it "has key set" do
       expect(subject.configuration.key).to eq 'key'

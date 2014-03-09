@@ -8,6 +8,8 @@ module InkFilePicker
 
   autoload :Assignable
   autoload :Configuration
+  autoload :FileHandle
+  autoload :UrlBuilder
   autoload :Client
   autoload :Policy
 
