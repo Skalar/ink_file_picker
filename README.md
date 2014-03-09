@@ -26,7 +26,7 @@ This client mirrors part of File Picker's JavaScript API.
 ```ruby
 # Create a client which will sign URLs. You may drop secret if you have
 # not enabled this feature in your developer portal for your application.
-client = InkFilePicker.new(key: 'you-api-key', secret: 'your-secret')
+client = InkFilePicker.client(key: 'you-api-key', secret: 'your-secret')
 ```
 
 ### Storing a file
