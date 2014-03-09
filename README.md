@@ -1,6 +1,6 @@
 # InkFilePicker
 
-TODO: Write a gem description
+Ruby API client for Ink File Picker (known as filepicker.io).
 
 ## Installation
 
@@ -18,7 +18,42 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+
+This client mirrors part of File Picker's JavaScript API.
+
+### Creating a client
+
+```ruby
+# Create a client which will sign URLs. You may drop secret if you have
+# not enabled this feature in your developer portal for your application.
+client = InkFilePicker.new(key: 'you-api-key', secret: 'your-secret')
+```
+
+### Storing a file
+```ruby
+response = client.store a_file_handle
+response = client.store 'http://www.example.com/img.jpg'
+```
+
+### Removing a file
+```ruby
+response = client.remove url_to_file_picker_file
+```
+
+### Read operations
+```ruby
+response = client.convert url_to_file_picker_file, w: 100, h: 100
+```
+
+### Signature and policy
+```ruby
+# client.sign has a few defaults:
+# expiry: 2.hours from now.
+# handle: parsed from given URL.
+
+response = client.sign url_to_file_picker_file, call: 'read'
+```
+
 
 ## Contributing
 
