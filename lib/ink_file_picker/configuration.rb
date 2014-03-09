@@ -3,10 +3,11 @@ module InkFilePicker
     include Assignable
 
     API_DEFAULTS = {
-      secret: nil
+      secret: nil,
+      default_expiry: 600 # in 10 hours
     }
 
-    attr_accessor :key, :secret
+    attr_accessor :key, :secret, :default_expiry
 
     def initialize(attributes = {})
       assign API_DEFAULTS

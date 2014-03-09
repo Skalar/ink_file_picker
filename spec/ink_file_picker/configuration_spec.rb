@@ -12,6 +12,7 @@ describe InkFilePicker::Configuration do
 
   its(:key) { should eq 'key' }
   its(:secret) { should eq 'secret' }
+  its(:default_expiry) { should eq 600 }
 
   describe "#initialize" do
     it "fails when no key is given" do
