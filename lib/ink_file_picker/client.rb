@@ -7,6 +7,13 @@ module InkFilePicker
     end
 
 
+    # Public: Generates a convert URL for given file.
+    #
+    # handle_or_url       - The handle or URL to the file
+    # params              - Convert params, like {w: 100, h:100}
+    # policy_attributes   - If you use security policies you may send in for instance {expire: 10.minutes.from_now} here
+    #
+    # Returns a URL to the converted image
     def convert(handle_or_url, params = {}, policy_attributes = {})
       file_handle = FileHandle.new handle_or_url, configuration.cdn_url
 
@@ -15,6 +22,15 @@ module InkFilePicker
       UrlBuilder.new(file_url: file_handle.url, action: :convert, params: params).to_s
     end
 
+
+    # Public: Generates a URL for a given file
+    #
+    # handle_or_url       - The handle or URL to the file
+    # policy_attributes   - If you use security policies you may send in for instance {expire: 10.minutes.from_now} here
+    #
+    # This method is not that usefull unless you have enabled security policy
+    #
+    # Returns a URL to the image
     def retrieve(handle_or_url, policy_attributes = {})
       file_handle = FileHandle.new handle_or_url, configuration.cdn_url
 
@@ -28,6 +44,9 @@ module InkFilePicker
 
 
 
+    # Public: Creates a policy with default configuration set in this client.
+    #
+    # Returns Policy object
     def policy(attributes)
       attributes.reverse_merge!(
         secret: configuration.secret,
