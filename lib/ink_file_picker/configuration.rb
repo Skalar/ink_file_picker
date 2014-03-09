@@ -5,10 +5,13 @@ module InkFilePicker
     API_DEFAULTS = {
       secret: nil,
       default_expiry: 600, # in 10 hours
-      cdn_url: 'https://www.filepicker.io/api/file/'
+      cdn_url: 'https://www.filepicker.io/api/file/',
+      filepicker_url: 'https://www.filepicker.io',
+      store_path: '/api/store/S3',
+      http_adapter: :net_http
     }
 
-    attr_accessor :key, :secret, :default_expiry, :cdn_url
+    attr_accessor :key, :secret, :default_expiry, :cdn_url, :filepicker_url, :store_path, :http_adapter
 
     def initialize(attributes = {})
       assign API_DEFAULTS

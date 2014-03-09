@@ -4,12 +4,61 @@ describe InkFilePicker::Client do
   let(:attributes) do
     {
       key: 'key',
-      secret: '6U5CWAU57NAHDC2ICXQKMXYZ4Q'
+      secret: '6U5CWAU57NAHDC2ICXQKMXYZ4Q',
+      http_adapter: :test
     }
   end
 
   subject { described_class.new attributes }
 
+  describe "#store" do
+    context "given a url" do
+      let(:url) { 'https://s3.amazonaws.com/test.jpg' }
+      let(:response) { '{"url": "https://www.filepicker.io/api/file/WmFxB2aSe20SGT2kzSsr", "size": 234, "type": "image/jpeg", "filename": "test.jpg", "key": "WmFxB2aSe20SGT2kzSsr_test.jpg"}' }
+
+      context "without secret" do
+        before { subject.configuration.secret = nil }
+
+        it "posts to filepicker" do
+          stubs = Faraday::Adapter::Test::Stubs.new do |stub|
+            stub.post(subject.configuration.store_path + '?key=key', {url: url}) { [200, {}, response] }
+          end
+
+          stubbed_connection = Faraday.new do |builder|
+            builder.adapter :test, stubs
+          end
+
+          subject.stub(:http_connection).and_return stubbed_connection
+
+          response = subject.store url
+          expect(response['url']).to eq 'https://www.filepicker.io/api/file/WmFxB2aSe20SGT2kzSsr'
+        end
+      end
+
+      context "with secret" do
+        it "includes policy and signature" do
+
+          stubs = Faraday::Adapter::Test::Stubs.new do |stub|
+            store_path = subject.configuration.store_path + '?key=key&policy=eyJleHBpcnkiOjEzOTQzNjM4OTYsImNhbGwiOiJzdG9yZSJ9&signature=60cb43bb945543d7fdbd2662ae21d5c53e28529720263619cfebc3509e820807'
+            stub.post(store_path, {url: url}) { [200, {}, response] }
+          end
+
+          stubbed_connection = Faraday.new do |builder|
+            builder.adapter :test, stubs
+          end
+
+          subject.stub(:http_connection).and_return stubbed_connection
+
+          response = subject.store url, expiry: 1394363896
+          expect(response['url']).to eq 'https://www.filepicker.io/api/file/WmFxB2aSe20SGT2kzSsr'
+        end
+      end
+    end
+
+    context "given a local file handle" do
+      pending
+    end
+  end
 
   describe "#convert_url" do
     let(:handle) { 'PHqJHHWpRAGUsIfyx0og' }

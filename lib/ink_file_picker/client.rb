@@ -1,3 +1,5 @@
+require "faraday"
+
 module InkFilePicker
   class Client
     attr_accessor :configuration
@@ -6,6 +8,17 @@ module InkFilePicker
       self.configuration = Configuration.new configuration
     end
 
+
+    def store(file_or_url, policy_attributes = {})
+      response = case file_or_url
+        when File
+          fail ArgumentError, "Not implemented file support, yet."
+        when String
+          store_url file_or_url, policy_attributes
+        end
+
+      JSON.parse response.body
+    end
 
     # Public: Generates a convert URL for given file.
     #
@@ -59,11 +72,32 @@ module InkFilePicker
 
 
 
+
     private
 
+    def http_connection
+      @http_connection ||= Faraday.new(url: configuration.filepicker_url) do |builder|
+        builder.request :multipart
+        builder.request :url_encoded
+        builder.adapter configuration.http_adapter || Faraday.default_adapter
+      end
+    end
+
     def add_policy_to(params, options = {})
-      policy_attributes = options[:from].merge options[:ensure_included]
+      policy_attributes = (options[:from] || {}).merge options[:ensure_included]
       params.merge! policy(policy_attributes)
+    end
+
+
+    def store_url(url, policy_attributes = {})
+      params = {key: configuration.key}
+
+      add_policy_to params, from: policy_attributes, ensure_included: {call: 'store'}
+
+      http_connection.post configuration.store_path do |request|
+        request.params = params
+        request.body = {url: url}
+      end
     end
   end
 end
