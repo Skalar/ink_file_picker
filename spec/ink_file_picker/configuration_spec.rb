@@ -13,6 +13,7 @@ describe InkFilePicker::Configuration do
   its(:key) { should eq 'key' }
   its(:secret) { should eq 'secret' }
   its(:default_expiry) { should eq 600 }
+  its(:cdn_url) { should eq 'https://www.filepicker.io/api/file/' }
 
   describe "#initialize" do
     it "fails when no key is given" do
