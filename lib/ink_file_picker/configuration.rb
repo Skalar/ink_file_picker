@@ -1,5 +1,7 @@
 module InkFilePicker
   class Configuration
+    include Assignable
+
     API_DEFAULTS = {
       secret: nil
     }
@@ -13,23 +15,8 @@ module InkFilePicker
       verify!
     end
 
-    def []=(name, value)
-      public_send "#{name}=", value
-    end
-
-    def [](name)
-      public_send name
-    end
-
-
 
     private
-
-    def assign(attributes)
-      attributes.each_pair do |name, value|
-        self[name] = value
-      end
-    end
 
     def verify!
       if key.blank?
