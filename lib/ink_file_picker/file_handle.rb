@@ -1,6 +1,9 @@
 require 'uri'
 
 module InkFilePicker
+  # Public: Simple class for working with file URL and file handles.
+  #
+  # Does conversions like url to handle and from a handle to url
   class FileHandle
     attr_accessor :handle_or_url, :cdn_url
 

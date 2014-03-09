@@ -1,4 +1,5 @@
 module InkFilePicker
+  # Public: Takes a file url, adds action to the path (if any), and includes params.
   class UrlBuilder
     include Assignable
 
