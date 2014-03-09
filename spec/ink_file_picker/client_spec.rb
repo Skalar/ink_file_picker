@@ -34,6 +34,29 @@ describe InkFilePicker::Client do
     end
   end
 
+  describe "#retrieve" do
+    let(:handle) { 'PHqJHHWpRAGUsIfyx0og' }
+    let(:url) { "https://www.filepicker.io/api/file/#{handle}" }
+
+    context "without secret" do
+      before { subject.configuration.secret = nil }
+
+      it "builds expected retrieve URL when given a URL" do
+        expect(subject.retrieve url).to eq 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og'
+      end
+
+      it "builds expected retrieve URL when given a handle" do
+        expect(subject.retrieve handle).to eq 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og'
+      end
+    end
+
+    context "with secret" do
+      it "builds expected retrieve URL when given a URL" do
+        expect(subject.retrieve url, expiry: 1394363896).to eq 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og?policy=eyJleHBpcnkiOjEzOTQzNjM4OTYsImNhbGwiOiJyZWFkIiwiaGFuZGxlIjoiUEhxSkhIV3BSQUdVc0lmeXgwb2cifQ%3D%3D&signature=6bba22df7390a44a13329d2f2ca8317c48317fe6612b21f957670969a074f778'
+      end
+    end
+  end
+
 
 
   describe "#configuration" do

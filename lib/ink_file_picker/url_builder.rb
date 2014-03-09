@@ -9,8 +9,10 @@ module InkFilePicker
     end
 
     def url
-      url = [file_url, action].join '/'
-      [url, params.to_param].join '?'
+      url = [file_url, action].compact.join '/'
+      url = [url, params.to_param].join '?' if params.any?
+
+      url
     end
     alias to_s url
   end

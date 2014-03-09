@@ -42,17 +42,11 @@ response = client.remove url_to_file_picker_file
 
 ### Read operations
 ```ruby
-response = client.convert url_to_file_picker_file, w: 100, h: 100
-response = client.convert url_to_file_picker_file, {w: 100, h: 100}, expiry: 10.minutes.from_now.to_i
-```
+url = client.convert url_to_file_picker_file, w: 100, h: 100
+url = client.convert url_to_file_picker_file, {w: 100, h: 100}, expiry: 10.minutes.from_now.to_i
 
-### Signature and policy
-```ruby
-# client.sign has a few defaults:
-# expiry: 2.hours from now.
-# handle: parsed from given URL.
-
-response = client.sign url_to_file_picker_file, call: 'read'
+url = client.retrieve url_to_file_picker_file
+url = client.retrieve url_to_file_picker_file, expiry: 10.minutes.from_now.to_i
 ```
 
 

@@ -13,6 +13,13 @@ module InkFilePicker
       UrlBuilder.new(handle.url, :convert, params).to_s
     end
 
+    def retrieve(handle_or_url, policy = {})
+      handle = FileHandle.new handle_or_url, configuration.cdn_url
+      params = policy(call: 'read', handle: handle.handle, expiry: policy[:expiry]).to_hash
+
+      UrlBuilder.new(handle.url, nil, params).to_s
+    end
+
 
 
 
