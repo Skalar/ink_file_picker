@@ -14,7 +14,7 @@ module InkFilePicker
     # policy_attributes   - If you use security policies you may send in for instance {expire: 10.minutes.from_now} here
     #
     # Returns a URL to the converted image
-    def convert(handle_or_url, params = {}, policy_attributes = {})
+    def convert_url(handle_or_url, params = {}, policy_attributes = {})
       file_handle = FileHandle.new handle_or_url, configuration.cdn_url
 
       add_policy_to params, from: policy_attributes, ensure_included: {handle: file_handle.handle, call: 'convert'}
@@ -31,7 +31,7 @@ module InkFilePicker
     # This method is not that usefull unless you have enabled security policy
     #
     # Returns a URL to the image
-    def retrieve(handle_or_url, policy_attributes = {})
+    def retrieve_url(handle_or_url, policy_attributes = {})
       file_handle = FileHandle.new handle_or_url, configuration.cdn_url
 
       params = {}

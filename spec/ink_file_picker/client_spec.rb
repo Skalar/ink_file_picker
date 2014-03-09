@@ -11,7 +11,7 @@ describe InkFilePicker::Client do
   subject { described_class.new attributes }
 
 
-  describe "#convert" do
+  describe "#convert_url" do
     let(:handle) { 'PHqJHHWpRAGUsIfyx0og' }
     let(:url) { "https://www.filepicker.io/api/file/#{handle}" }
 
@@ -19,22 +19,22 @@ describe InkFilePicker::Client do
       before { subject.configuration.secret = nil }
 
       it "builds expected convert URL when given a URL" do
-        expect(subject.convert url, w: 300, h: 200).to eq 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og/convert?h=200&w=300'
+        expect(subject.convert_url url, w: 300, h: 200).to eq 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og/convert?h=200&w=300'
       end
 
       it "builds expected convert URL when given a handle" do
-        expect(subject.convert handle, w: 300, h: 200).to eq 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og/convert?h=200&w=300'
+        expect(subject.convert_url handle, w: 300, h: 200).to eq 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og/convert?h=200&w=300'
       end
     end
 
     context "with secret" do
       it "builds expected convert URL when given a URL" do
-        expect(subject.convert url, {w: 300, h: 200}, expiry: 1394363896).to eq 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og/convert?h=200&policy=eyJleHBpcnkiOjEzOTQzNjM4OTYsImNhbGwiOiJjb252ZXJ0IiwiaGFuZGxlIjoiUEhxSkhIV3BSQUdVc0lmeXgwb2cifQ%3D%3D&signature=b370d4ae604c7917c169fe5b10a6274683bb82056c7b80993a7601d486b89d22&w=300'
+        expect(subject.convert_url url, {w: 300, h: 200}, expiry: 1394363896).to eq 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og/convert?h=200&policy=eyJleHBpcnkiOjEzOTQzNjM4OTYsImNhbGwiOiJjb252ZXJ0IiwiaGFuZGxlIjoiUEhxSkhIV3BSQUdVc0lmeXgwb2cifQ%3D%3D&signature=b370d4ae604c7917c169fe5b10a6274683bb82056c7b80993a7601d486b89d22&w=300'
       end
     end
   end
 
-  describe "#retrieve" do
+  describe "#retrieve_url" do
     let(:handle) { 'PHqJHHWpRAGUsIfyx0og' }
     let(:url) { "https://www.filepicker.io/api/file/#{handle}" }
 
@@ -42,17 +42,17 @@ describe InkFilePicker::Client do
       before { subject.configuration.secret = nil }
 
       it "builds expected retrieve URL when given a URL" do
-        expect(subject.retrieve url).to eq 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og'
+        expect(subject.retrieve_url url).to eq 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og'
       end
 
       it "builds expected retrieve URL when given a handle" do
-        expect(subject.retrieve handle).to eq 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og'
+        expect(subject.retrieve_url handle).to eq 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og'
       end
     end
 
     context "with secret" do
       it "builds expected retrieve URL when given a URL" do
-        expect(subject.retrieve url, expiry: 1394363896).to eq 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og?policy=eyJleHBpcnkiOjEzOTQzNjM4OTYsImNhbGwiOiJyZWFkIiwiaGFuZGxlIjoiUEhxSkhIV3BSQUdVc0lmeXgwb2cifQ%3D%3D&signature=6bba22df7390a44a13329d2f2ca8317c48317fe6612b21f957670969a074f778'
+        expect(subject.retrieve_url url, expiry: 1394363896).to eq 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og?policy=eyJleHBpcnkiOjEzOTQzNjM4OTYsImNhbGwiOiJyZWFkIiwiaGFuZGxlIjoiUEhxSkhIV3BSQUdVc0lmeXgwb2cifQ%3D%3D&signature=6bba22df7390a44a13329d2f2ca8317c48317fe6612b21f957670969a074f778'
       end
     end
   end

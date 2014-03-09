@@ -42,11 +42,11 @@ response = client.remove url_to_file_picker_file
 
 ### Read operations
 ```ruby
-url = client.convert url_to_file_picker_file, w: 100, h: 100
-url = client.convert url_to_file_picker_file, {w: 100, h: 100}, expiry: 10.minutes.from_now.to_i
+url = client.convert_url url_to_file_picker_file, w: 100, h: 100
+url = client.convert_url url_to_file_picker_file, {w: 100, h: 100}, expiry: 10.minutes.from_now.to_i
 
-url = client.retrieve url_to_file_picker_file
-url = client.retrieve url_to_file_picker_file, expiry: 10.minutes.from_now.to_i
+url = client.retrieve_url url_to_file_picker_file
+url = client.retrieve_url url_to_file_picker_file, expiry: 10.minutes.from_now.to_i
 ```
 
 
