@@ -1,3 +1,5 @@
+require 'uri'
+
 module InkFilePicker
   class FileHandle
     attr_accessor :handle_or_url, :cdn_url
@@ -13,6 +15,11 @@ module InkFilePicker
       else
         build_url_from_handle
       end
+    end
+
+    def handle
+      uri = URI(url)
+      uri.path.split('/').last
     end
 
 
