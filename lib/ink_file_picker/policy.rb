@@ -16,7 +16,7 @@ module InkFilePicker
 
 
     def policy
-      Base64.urlsafe_encode64 to_json
+      Base64.urlsafe_encode64 policy_json
     end
 
     def signature
@@ -24,8 +24,18 @@ module InkFilePicker
     end
 
 
+    def to_hash
+      return {} if secret.blank?
 
-    def to_json
+      {
+        policy: policy,
+        signature: signature
+      }
+    end
+
+
+
+    def policy_json
       out = {}
 
       POLICY_ATTRIBUTES.each do |attr_name|
