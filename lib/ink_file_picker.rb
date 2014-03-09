@@ -9,6 +9,7 @@ module InkFilePicker
   autoload :Assignable
   autoload :Configuration
   autoload :Client
+  autoload :Policy
 
   # Public: Creates a new Ink File Picker Client.
   #
