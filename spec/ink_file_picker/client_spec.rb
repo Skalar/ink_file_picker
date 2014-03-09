@@ -31,13 +31,14 @@ describe InkFilePicker::Client do
           subject.stub(:http_connection).and_return stubbed_connection
 
           response = subject.store url
+
+          stubs.verify_stubbed_calls
           expect(response['url']).to eq 'https://www.filepicker.io/api/file/WmFxB2aSe20SGT2kzSsr'
         end
       end
 
       context "with secret" do
         it "includes policy and signature" do
-
           stubs = Faraday::Adapter::Test::Stubs.new do |stub|
             store_path = subject.configuration.store_path + '?key=key&policy=eyJleHBpcnkiOjEzOTQzNjM4OTYsImNhbGwiOiJzdG9yZSJ9&signature=60cb43bb945543d7fdbd2662ae21d5c53e28529720263619cfebc3509e820807'
             stub.post(store_path, {url: url}) { [200, {}, response] }
@@ -50,6 +51,8 @@ describe InkFilePicker::Client do
           subject.stub(:http_connection).and_return stubbed_connection
 
           response = subject.store url, expiry: 1394363896
+
+          stubs.verify_stubbed_calls
           expect(response['url']).to eq 'https://www.filepicker.io/api/file/WmFxB2aSe20SGT2kzSsr'
         end
       end
@@ -57,6 +60,67 @@ describe InkFilePicker::Client do
 
     context "given a local file handle" do
       pending
+    end
+  end
+
+  describe "#remove" do
+    let(:file_url) { 'https://www.filepicker.io/api/file/WmFxB2aSe20SGT2kzSsr' }
+
+    context "without secret" do
+      before { subject.configuration.secret = nil }
+
+      it "makes a delete request with url" do
+        stubs = Faraday::Adapter::Test::Stubs.new do |stub|
+          stub.delete(file_url + '?key=key') { [200, {}, 'success'] }
+        end
+
+        stubbed_connection = Faraday.new do |builder|
+          builder.adapter :test, stubs
+        end
+
+        subject.stub(:http_connection).and_return stubbed_connection
+
+        response = subject.remove file_url
+
+        stubs.verify_stubbed_calls
+        expect(response).to be_true
+      end
+
+      it "makes delete request with file handle name" do
+        stubs = Faraday::Adapter::Test::Stubs.new do |stub|
+          stub.delete(file_url + '?key=key') { [200, {}, 'success'] }
+        end
+
+        stubbed_connection = Faraday.new do |builder|
+          builder.adapter :test, stubs
+        end
+
+        subject.stub(:http_connection).and_return stubbed_connection
+
+        response = subject.remove 'WmFxB2aSe20SGT2kzSsr'
+
+        stubs.verify_stubbed_calls
+        expect(response).to be_true
+      end
+    end
+
+    context "with secret" do
+      it "includes policy and signature" do
+        stubs = Faraday::Adapter::Test::Stubs.new do |stub|
+          stub.delete(file_url + '?key=key&policy=eyJleHBpcnkiOjEzOTQzNjM4OTYsImNhbGwiOiJyZW1vdmUiLCJoYW5kbGUiOiJXbUZ4QjJhU2UyMFNHVDJrelNzciJ9&signature=a557d55a680892235619ff0bec6c7254fbb8088e53a53d923b4fad1d39df3955') { [200, {}, 'success'] }
+        end
+
+        stubbed_connection = Faraday.new do |builder|
+          builder.adapter :test, stubs
+        end
+
+        subject.stub(:http_connection).and_return stubbed_connection
+
+        response = subject.remove file_url, expiry: 1394363896
+
+        stubs.verify_stubbed_calls
+        expect(response).to be_true
+      end
     end
   end
 

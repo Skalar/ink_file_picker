@@ -9,6 +9,12 @@ module InkFilePicker
     end
 
 
+    # Public: Store a file.
+    #
+    # file_or_url         - An handle to a local file or a URL as string
+    # policy_attributes   - If you use security policies you may send in for instance {expire: 10.minutes.from_now} here
+    #
+    # Returns a hash representing the response where you can read 'url'
     def store(file_or_url, policy_attributes = {})
       response = case file_or_url
         when File
@@ -18,6 +24,32 @@ module InkFilePicker
         end
 
       JSON.parse response.body
+    end
+
+    # Public: Removes a file from file picker.
+    #
+    # handle_or_url       - The handle or URL to the file
+    # policy_attributes   - If you use security policies you may send in for instance {expire: 10.minutes.from_now} here
+    #
+    # Returns boolean value
+    def remove(handle_or_url, policy_attributes = {})
+      response = http_connection.delete remove_url(handle_or_url, policy_attributes)
+      response.success?
+    end
+
+    # Public: Generates a you can use for removing an asset on file picker.
+    #
+    # handle_or_url       - The handle or URL to the file
+    # policy_attributes   - If you use security policies you may send in for instance {expire: 10.minutes.from_now} here
+    #
+    # Returns a URL to the converted image
+    def remove_url(handle_or_url, policy_attributes = {})
+      file_handle = FileHandle.new handle_or_url, configuration.cdn_url
+
+      params = {key: configuration.key}
+      add_policy_to params, from: policy_attributes, ensure_included: {handle: file_handle.handle, call: 'remove'}
+
+      url = UrlBuilder.new(file_url: file_handle.url, params: params).to_s
     end
 
     # Public: Generates a convert URL for given file.
