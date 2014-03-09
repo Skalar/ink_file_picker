@@ -4,4 +4,7 @@ require "active_support/all"
 
 
 module InkFilePicker
+  extend ActiveSupport::Autoload
+
+  autoload :Configuration
 end
