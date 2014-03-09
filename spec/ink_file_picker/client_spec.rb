@@ -4,7 +4,7 @@ describe InkFilePicker::Client do
   let(:attributes) do
     {
       key: 'key',
-      secret: 'secret'
+      secret: '6U5CWAU57NAHDC2ICXQKMXYZ4Q'
     }
   end
 
@@ -26,6 +26,12 @@ describe InkFilePicker::Client do
         expect(subject.convert handle, w: 300, h: 200).to eq 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og/convert?h=200&w=300'
       end
     end
+
+    context "with secret" do
+      it "builds expected convert URL when given a URL" do
+        expect(subject.convert url, {w: 300, h: 200}, expiry: 1394363896).to eq 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og/convert?h=200&policy=eyJleHBpcnkiOjEzOTQzNjM4OTYsImNhbGwiOiJjb252ZXJ0IiwiaGFuZGxlIjoiUEhxSkhIV3BSQUdVc0lmeXgwb2cifQ%3D%3D&signature=b370d4ae604c7917c169fe5b10a6274683bb82056c7b80993a7601d486b89d22&w=300'
+      end
+    end
   end
 
 
@@ -36,7 +42,7 @@ describe InkFilePicker::Client do
     end
 
     it "has secret set" do
-      expect(subject.configuration.secret).to eq 'secret'
+      expect(subject.configuration.secret).to eq '6U5CWAU57NAHDC2ICXQKMXYZ4Q'
     end
   end
 

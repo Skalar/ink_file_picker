@@ -43,6 +43,7 @@ response = client.remove url_to_file_picker_file
 ### Read operations
 ```ruby
 response = client.convert url_to_file_picker_file, w: 100, h: 100
+response = client.convert url_to_file_picker_file, {w: 100, h: 100}, expiry: 10.minutes.from_now.to_i
 ```
 
 ### Signature and policy
