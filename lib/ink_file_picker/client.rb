@@ -85,12 +85,7 @@ module InkFilePicker
     #
     # Returns a URL to the converted image
     def remove_url(handle_or_url, policy_attributes = {})
-      file_handle = FileHandle.new handle_or_url, configuration.cdn_url
-
-      params = {key: configuration.key}
-      add_policy_to params, from: policy_attributes, ensure_included: {handle: file_handle.handle, call: 'remove'}
-
-      url = UrlBuilder.new(file_url: file_handle.url, params: params).to_s
+      generate_url handle_or_url, {key: configuration.key}, policy_attributes, call: 'remove'
     end
 
     # Public: Generates a convert URL for given file.
@@ -101,11 +96,7 @@ module InkFilePicker
     #
     # Returns a URL to the converted image
     def convert_url(handle_or_url, params = {}, policy_attributes = {})
-      file_handle = FileHandle.new handle_or_url, configuration.cdn_url
-
-      add_policy_to params, from: policy_attributes, ensure_included: {handle: file_handle.handle, call: 'convert'}
-
-      UrlBuilder.new(file_url: file_handle.url, action: :convert, params: params).to_s
+      generate_url handle_or_url, params, policy_attributes, call: 'convert', url_action: 'convert'
     end
 
 
@@ -118,12 +109,7 @@ module InkFilePicker
     #
     # Returns a URL to the image
     def retrieve_url(handle_or_url, policy_attributes = {})
-      file_handle = FileHandle.new handle_or_url, configuration.cdn_url
-
-      params = {}
-      add_policy_to params, from: policy_attributes, ensure_included: {handle: file_handle.handle, call: 'read'}
-
-      UrlBuilder.new(file_url: file_handle.url, params: params).to_s
+      generate_url handle_or_url, {}, policy_attributes, call: 'read'
     end
 
 
@@ -134,12 +120,7 @@ module InkFilePicker
     #
     # Returns a URL to the image you can do a HEAD request to in order to get stats
     def stat_url(handle_or_url, policy_attributes = {})
-      file_handle = FileHandle.new handle_or_url, configuration.cdn_url
-
-      params = {}
-      add_policy_to params, from: policy_attributes, ensure_included: {handle: file_handle.handle, call: 'stat'}
-
-      UrlBuilder.new(file_url: file_handle.url, params: params).to_s
+      generate_url handle_or_url, {}, policy_attributes, call: 'stat'
     end
 
 
@@ -172,9 +153,18 @@ module InkFilePicker
       end
     end
 
+    def generate_url(handle_or_url, params, policy_attributes, options)
+      file_handle = FileHandle.new handle_or_url, configuration.cdn_url
+
+      add_policy_to params, from: policy_attributes, ensure_included: {handle: file_handle.handle, call: options[:call]}
+
+      url = UrlBuilder.new(file_url: file_handle.url, action: options[:url_action], params: params).to_s
+    end
+
     def add_policy_to(params, options = {})
       policy_attributes = (options[:from] || {}).merge options[:ensure_included]
       params.merge! policy(policy_attributes)
     end
+
   end
 end
