@@ -31,7 +31,7 @@ client = InkFilePicker.client(key: 'you-api-key', secret: 'your-secret')
 
 ### Storing a file
 ```ruby
-response = client.store_file a_file_handle, content_type
+response = client.store_file file_or_path, content_type
 response = client.store_url 'http://www.example.com/img.jpg'
 ```
 

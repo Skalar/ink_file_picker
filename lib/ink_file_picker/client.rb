@@ -9,12 +9,12 @@ module InkFilePicker
     end
 
 
-    # Public: Store a file.
+    # Public: Store a file from given URL.
     #
     # url                 - URL to resource
     # policy_attributes   - If you use security policies you may send in for instance {expire: 10.minutes.from_now} here
     #
-    # Returns a hash representing the response where you can read 'url'
+    # Returns a hash representing the response where you can read for instance 'url'
     def store_url(url, policy_attributes = {})
       params = {key: configuration.key}
 
@@ -28,8 +28,16 @@ module InkFilePicker
       JSON.parse response.body
     end
 
-    def store_file(file, content_type, filename = nil, policy_attributes = {})
-      file_upload = Faraday::UploadIO.new file, content_type, filename
+    # Public: Store a file from given local file or path.
+    #
+    # file_or_path        - File or path to file
+    # content_type        - The file's content type
+    # filename            - The file's name, optional
+    # policy_attributes   - If you use security policies you may send in for instance {expire: 10.minutes.from_now} here
+    #
+    # Returns a hash representing the response where you can read for instance 'url'
+    def store_file(file_or_path, content_type, filename = nil, policy_attributes = {})
+      file_upload = Faraday::UploadIO.new file_or_path, content_type, filename
       params = {key: configuration.key}
 
       add_policy_to params, from: policy_attributes, ensure_included: {call: 'store'}
@@ -53,9 +61,21 @@ module InkFilePicker
       response.success?
     end
 
+
+    # Public: Returns short stat for a file
+    #
+    # handle_or_url       - The handle or URL to the file
+    # policy_attributes   - If you use security policies you may send in for instance {expire: 10.minutes.from_now} here
+    #
+    # Returns hash of headers returned from file picker or false if request was unsuccessful
     def stat(handle_or_url, policy_attributes = {})
       response = http_connection.head stat_url(handle_or_url, policy_attributes)
-      response.headers
+
+      if response.success?
+        response.headers
+      else
+        false
+      end
     end
 
     # Public: Generates a you can use for removing an asset on file picker.
@@ -107,6 +127,12 @@ module InkFilePicker
     end
 
 
+    # Public: Generates a stat URL for a given file
+    #
+    # handle_or_url       - The handle or URL to the file
+    # policy_attributes   - If you use security policies you may send in for instance {expire: 10.minutes.from_now} here
+    #
+    # Returns a URL to the image you can do a HEAD request to in order to get stats
     def stat_url(handle_or_url, policy_attributes = {})
       file_handle = FileHandle.new handle_or_url, configuration.cdn_url
 
