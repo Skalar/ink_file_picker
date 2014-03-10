@@ -48,6 +48,9 @@ url = client.convert_url url_or_handle_name, {w: 100, h: 100}, expiry: 10.minute
 # Adds policy and signature, if secret given when client was created.
 url = client.retrieve_url url_or_handle_name
 url = client.retrieve_url url_or_handle_name, expiry: 10.minutes.from_now.to_i
+
+
+stats = client.stat url_or_handle_name
 ```
 
 

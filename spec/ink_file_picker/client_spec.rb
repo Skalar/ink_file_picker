@@ -124,6 +124,32 @@ describe InkFilePicker::Client do
     end
   end
 
+  describe "#stat" do
+    let(:file_url) { 'https://www.filepicker.io/api/file/WmFxB2aSe20SGT2kzSsr' }
+    let(:stat_headers) { {'Headers' => 'here'} }
+
+    context "with secret" do
+      it "includes policy and signature" do
+        stubs = Faraday::Adapter::Test::Stubs.new do |stub|
+          stub.head(file_url + '?policy=eyJleHBpcnkiOjEzOTQzNjM4OTYsImNhbGwiOiJzdGF0IiwiaGFuZGxlIjoiV21GeEIyYVNlMjBTR1Qya3pTc3IifQ%3D%3D&signature=d70d11f59750903c628f4e35ecc15ef504d71b1ed104c653fe57b2231a7d667c') do
+            [200, stat_headers, '']
+          end
+        end
+
+        stubbed_connection = Faraday.new do |builder|
+          builder.adapter :test, stubs
+        end
+
+        subject.stub(:http_connection).and_return stubbed_connection
+
+        response = subject.stat file_url, expiry: 1394363896
+
+        stubs.verify_stubbed_calls
+        expect(response).to eq stat_headers
+      end
+    end
+  end
+
   describe "#convert_url" do
     let(:handle) { 'PHqJHHWpRAGUsIfyx0og' }
     let(:url) { "https://www.filepicker.io/api/file/#{handle}" }

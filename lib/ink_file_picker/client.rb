@@ -37,6 +37,11 @@ module InkFilePicker
       response.success?
     end
 
+    def stat(handle_or_url, policy_attributes = {})
+      response = http_connection.head stat_url(handle_or_url, policy_attributes)
+      response.headers
+    end
+
     # Public: Generates a you can use for removing an asset on file picker.
     #
     # handle_or_url       - The handle or URL to the file
@@ -81,6 +86,16 @@ module InkFilePicker
 
       params = {}
       add_policy_to params, from: policy_attributes, ensure_included: {handle: file_handle.handle, call: 'read'}
+
+      UrlBuilder.new(file_url: file_handle.url, params: params).to_s
+    end
+
+
+    def stat_url(handle_or_url, policy_attributes = {})
+      file_handle = FileHandle.new handle_or_url, configuration.cdn_url
+
+      params = {}
+      add_policy_to params, from: policy_attributes, ensure_included: {handle: file_handle.handle, call: 'stat'}
 
       UrlBuilder.new(file_url: file_handle.url, params: params).to_s
     end
