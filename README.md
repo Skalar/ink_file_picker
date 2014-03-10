@@ -31,8 +31,8 @@ client = InkFilePicker.client(key: 'you-api-key', secret: 'your-secret')
 
 ### Storing a file
 ```ruby
-response = client.store a_file_handle
-response = client.store 'http://www.example.com/img.jpg'
+response = client.store_file a_file_handle, content_type
+response = client.store_url 'http://www.example.com/img.jpg'
 ```
 
 ### Removing a file

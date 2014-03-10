@@ -11,17 +11,33 @@ module InkFilePicker
 
     # Public: Store a file.
     #
-    # file_or_url         - An handle to a local file or a URL as string
+    # url                 - URL to resource
     # policy_attributes   - If you use security policies you may send in for instance {expire: 10.minutes.from_now} here
     #
     # Returns a hash representing the response where you can read 'url'
-    def store(file_or_url, policy_attributes = {})
-      response = case file_or_url
-        when File
-          fail ArgumentError, "Not implemented file support, yet."
-        when String
-          store_url file_or_url, policy_attributes
-        end
+    def store_url(url, policy_attributes = {})
+      params = {key: configuration.key}
+
+      add_policy_to params, from: policy_attributes, ensure_included: {call: 'store'}
+
+      response = http_connection.post configuration.store_path do |request|
+        request.params = params
+        request.body = {url: url}
+      end
+
+      JSON.parse response.body
+    end
+
+    def store_file(file, content_type, filename = nil, policy_attributes = {})
+      file_upload = Faraday::UploadIO.new file, content_type, filename
+      params = {key: configuration.key}
+
+      add_policy_to params, from: policy_attributes, ensure_included: {call: 'store'}
+
+      response = http_connection.post configuration.store_path do |request|
+        request.params = params
+        request.body = {fileUpload: file_upload}
+      end
 
       JSON.parse response.body
     end
@@ -133,18 +149,6 @@ module InkFilePicker
     def add_policy_to(params, options = {})
       policy_attributes = (options[:from] || {}).merge options[:ensure_included]
       params.merge! policy(policy_attributes)
-    end
-
-
-    def store_url(url, policy_attributes = {})
-      params = {key: configuration.key}
-
-      add_policy_to params, from: policy_attributes, ensure_included: {call: 'store'}
-
-      http_connection.post configuration.store_path do |request|
-        request.params = params
-        request.body = {url: url}
-      end
     end
   end
 end
