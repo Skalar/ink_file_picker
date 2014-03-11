@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'ink_file_picker/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "Ruby client for Ink File Picker"
+  spec.name          = "ink_file_picker"
   spec.version       = InkFilePicker::VERSION
   spec.authors       = ["Thorbjørn Hermansen"]
   spec.email         = ["thhermansen@gmail.com"]
