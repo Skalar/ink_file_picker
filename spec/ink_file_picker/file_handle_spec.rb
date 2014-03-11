@@ -7,12 +7,16 @@ describe InkFilePicker::FileHandle do
 
 
   describe "#url" do
-    it "url passes through" do
+    it "url passes through if the cdn url is the same as given URL" do
       expect(described_class.new(url, cdn_url).url).to eq url
     end
 
     it "builds a file URL given only a file handle" do
       expect(described_class.new(handle, cdn_url).url).to eq url
+    end
+
+    it "ensures that we use CDN" do
+      expect(described_class.new(url, 'http://cdn.com/').url).to eq "http://cdn.com/#{handle}"
     end
   end
 
