@@ -143,8 +143,6 @@ module InkFilePicker
 
 
 
-    private
-
     def http_connection
       @http_connection ||= Faraday.new(url: configuration.filepicker_url) do |builder|
         builder.request :multipart
@@ -152,6 +150,9 @@ module InkFilePicker
         builder.adapter configuration.http_adapter || Faraday.default_adapter
       end
     end
+
+
+    private
 
     def generate_url(handle_or_url, params, policy_attributes, options)
       file_handle = FileHandle.new handle_or_url, configuration.cdn_url
