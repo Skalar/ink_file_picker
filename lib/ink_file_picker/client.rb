@@ -103,13 +103,14 @@ module InkFilePicker
     # Public: Generates a URL for a given file
     #
     # handle_or_url       - The handle or URL to the file
+    # params              - Params to be added as get params, like {cache: true}
     # policy_attributes   - If you use security policies you may send in for instance {expire: 10.minutes.from_now} here
     #
     # This method is not that usefull unless you have enabled security policy
     #
     # Returns a URL to the image
-    def retrieve_url(handle_or_url, policy_attributes = {})
-      generate_url handle_or_url, {}, policy_attributes, call: 'read'
+    def retrieve_url(handle_or_url, params = {}, policy_attributes = {})
+      generate_url handle_or_url, params, policy_attributes, call: 'read'
     end
 
 

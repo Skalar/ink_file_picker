@@ -248,11 +248,15 @@ describe InkFilePicker::Client do
       it "builds expected retrieve URL when given a handle" do
         expect(subject.retrieve_url handle).to eq 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og'
       end
+
+      it "can include params like cache set to true" do
+        expect(subject.retrieve_url handle, cache: true).to eq 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og?cache=true'
+      end
     end
 
     context "with secret" do
       it "builds expected retrieve URL when given a URL" do
-        expect(subject.retrieve_url url, expiry: 1394363896).to eq 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og?policy=eyJleHBpcnkiOjEzOTQzNjM4OTYsImNhbGwiOiJyZWFkIiwiaGFuZGxlIjoiUEhxSkhIV3BSQUdVc0lmeXgwb2cifQ%3D%3D&signature=6bba22df7390a44a13329d2f2ca8317c48317fe6612b21f957670969a074f778'
+        expect(subject.retrieve_url url, {}, expiry: 1394363896).to eq 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og?policy=eyJleHBpcnkiOjEzOTQzNjM4OTYsImNhbGwiOiJyZWFkIiwiaGFuZGxlIjoiUEhxSkhIV3BSQUdVc0lmeXgwb2cifQ%3D%3D&signature=6bba22df7390a44a13329d2f2ca8317c48317fe6612b21f957670969a074f778'
       end
     end
   end
