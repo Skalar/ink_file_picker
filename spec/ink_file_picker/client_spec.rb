@@ -187,13 +187,12 @@ describe InkFilePicker::Client do
 
   describe "#stat" do
     let(:file_url) { 'https://www.filepicker.io/api/file/WmFxB2aSe20SGT2kzSsr' }
-    let(:stat_headers) { {'Headers' => 'here'} }
 
     context "with secret" do
       it "includes policy and signature" do
         stubs = Faraday::Adapter::Test::Stubs.new do |stub|
-          stub.head(file_url + '?policy=eyJleHBpcnkiOjEzOTQzNjM4OTYsImNhbGwiOiJzdGF0IiwiaGFuZGxlIjoiV21GeEIyYVNlMjBTR1Qya3pTc3IifQ%3D%3D&signature=d70d11f59750903c628f4e35ecc15ef504d71b1ed104c653fe57b2231a7d667c') do
-            [200, stat_headers, '']
+          stub.get(file_url + '/metadata' + '?policy=eyJleHBpcnkiOjEzOTQzNjM4OTYsImNhbGwiOiJzdGF0IiwiaGFuZGxlIjoiV21GeEIyYVNlMjBTR1Qya3pTc3IifQ%3D%3D&signature=d70d11f59750903c628f4e35ecc15ef504d71b1ed104c653fe57b2231a7d667c') do
+            [200, {}, '{"mimetype": "image/jpeg", "uploaded": 13.0}']
           end
         end
 
@@ -203,10 +202,29 @@ describe InkFilePicker::Client do
 
         subject.stub(:http_connection).and_return stubbed_connection
 
-        response = subject.stat file_url, expiry: 1394363896
+        response = subject.stat file_url, {}, expiry: 1394363896
 
         stubs.verify_stubbed_calls
-        expect(response).to eq stat_headers
+        expect(response['uploaded']).to eq 13.0
+      end
+
+      it "forwards get params" do
+        stubs = Faraday::Adapter::Test::Stubs.new do |stub|
+          stub.get(file_url + '/metadata' + '?heigth=true&policy=eyJleHBpcnkiOjEzOTQzNjM4OTYsImNhbGwiOiJzdGF0IiwiaGFuZGxlIjoiV21GeEIyYVNlMjBTR1Qya3pTc3IifQ%3D%3D&signature=d70d11f59750903c628f4e35ecc15ef504d71b1ed104c653fe57b2231a7d667c&width=true') do
+            [200, {}, '{"width": 100, "height": 100}']
+          end
+        end
+
+        stubbed_connection = Faraday.new do |builder|
+          builder.adapter :test, stubs
+        end
+
+        subject.stub(:http_connection).and_return stubbed_connection
+
+        response = subject.stat file_url, {width: true, heigth: true}, expiry: 1394363896
+
+        stubs.verify_stubbed_calls
+        expect(response['width']).to eq 100
       end
     end
   end

@@ -65,14 +65,15 @@ module InkFilePicker
     # Public: Returns short stat for a file
     #
     # handle_or_url       - The handle or URL to the file
+    # params              - Request params, like {width: true, height: true} to get width and height info. May be empty for default response
     # policy_attributes   - If you use security policies you may send in for instance {expire: 10.minutes.from_now} here
     #
     # Returns hash of headers returned from file picker or false if request was unsuccessful
-    def stat(handle_or_url, policy_attributes = {})
-      response = http_connection.head stat_url(handle_or_url, policy_attributes)
+    def stat(handle_or_url, params = {}, policy_attributes = {})
+      response = http_connection.get stat_url(handle_or_url, params, policy_attributes)
 
       if response.success?
-        response.headers
+        JSON.parse response.body
       else
         false
       end
@@ -120,8 +121,8 @@ module InkFilePicker
     # policy_attributes   - If you use security policies you may send in for instance {expire: 10.minutes.from_now} here
     #
     # Returns a URL to the image you can do a HEAD request to in order to get stats
-    def stat_url(handle_or_url, policy_attributes = {})
-      generate_url handle_or_url, {}, policy_attributes, call: 'stat'
+    def stat_url(handle_or_url, params, policy_attributes = {})
+      generate_url handle_or_url, params, policy_attributes, call: 'stat', url_action: 'metadata'
     end
 
 

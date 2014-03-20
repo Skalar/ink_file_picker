@@ -2,6 +2,8 @@
 
 Ruby API client for Ink File Picker (known as filepicker.io).
 
+
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -16,10 +18,13 @@ Or install it yourself as:
 
     $ gem install ink_file_picker
 
+
+
 ## Usage
 
-
 This client mirrors part of File Picker's JavaScript API.
+
+
 
 ### Creating a client
 
@@ -50,8 +55,18 @@ url = client.retrieve_url url_or_handle_name
 url = client.retrieve_url url_or_handle_name, expiry: 10.minutes.from_now.to_i
 
 
-stats = client.stat url_or_handle_name
+# Get simple stat on a file, like the Javascript client
+stat = client.stat url_or_handle_name
+
+dimentions = client.stat url_or_handle_name, {width: true, height: true}
 ```
+
+
+
+## TODO
+
+* Error handling when requests fails.
+* I guess other things as well, as I have not spent that much time on this :-)
 
 
 ## Contributing
