@@ -1,12 +1,19 @@
 module InkFilePicker
+  # Public: Simple decorator class for response.
+  #
+  # Decorates the response with hash like access to the
+  # parsed body, which is expected to be JSON.
   class Response
     attr_reader :http_response
 
-    delegate :[], to: :parsed_body
     delegate :success?, to: :http_response
 
     def initialize(http_response)
       @http_response = http_response
+    end
+
+    def [](key)
+      parsed_body[key.to_s]
     end
 
     def parsed_body
