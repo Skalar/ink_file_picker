@@ -63,11 +63,6 @@ dimentions = client.stat url_or_handle_name, {width: true, height: true}
 
 
 
-## TODO
-
-* Error handling when requests fails.
-* I guess other things as well, as I have not spent that much time on this :-)
-
 
 ## Contributing
 

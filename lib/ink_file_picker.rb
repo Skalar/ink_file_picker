@@ -1,7 +1,7 @@
 require "ink_file_picker/version"
 
 require "active_support/all"
-
+require "ink_file_picker/errors"
 
 module InkFilePicker
   extend ActiveSupport::Autoload

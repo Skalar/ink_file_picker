@@ -25,6 +25,8 @@ module InkFilePicker
         request.body = {url: url}
       end
 
+      inspect_response_for_errors! response
+
       JSON.parse response.body
     end
 
@@ -47,6 +49,7 @@ module InkFilePicker
         request.body = {fileUpload: file_upload}
       end
 
+      inspect_response_for_errors! response
       JSON.parse response.body
     end
 
@@ -58,6 +61,8 @@ module InkFilePicker
     # Returns boolean value
     def remove(handle_or_url, policy_attributes = {})
       response = http_connection.delete remove_url(handle_or_url, policy_attributes)
+
+      inspect_response_for_errors! response
       response.success?
     end
 
@@ -72,11 +77,8 @@ module InkFilePicker
     def stat(handle_or_url, params = {}, policy_attributes = {})
       response = http_connection.get stat_url(handle_or_url, params, policy_attributes)
 
-      if response.success?
-        JSON.parse response.body
-      else
-        false
-      end
+      inspect_response_for_errors! response
+      JSON.parse response.body
     end
 
     # Public: Generates a you can use for removing an asset on file picker.
@@ -169,5 +171,18 @@ module InkFilePicker
       params.merge! policy(policy_attributes)
     end
 
+    # Private: Inspects response for error and raise a InkFilePicker error if client/server error.
+    def inspect_response_for_errors!(response)
+      unless response.success?
+        case response.status
+        when 400...500
+          fail ClientError.new response.body, response
+        when 500...600
+          fail ServerError.new response.body, response
+        else
+          fail Error, "Response was neither a success, nor within http status 400...600. Response was: '#{response.inspect}'."
+        end
+      end
+    end
   end
 end

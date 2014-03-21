@@ -54,6 +54,36 @@ describe InkFilePicker::Client do
         stubs.verify_stubbed_calls
         expect(response['url']).to eq 'https://www.filepicker.io/api/file/WmFxB2aSe20SGT2kzSsr'
       end
+
+      it "handles client errors correctly" do
+        stubs = Faraday::Adapter::Test::Stubs.new do |stub|
+          store_path = subject.configuration.store_path + '?key=key&policy=eyJleHBpcnkiOjEzOTQzNjM4OTYsImNhbGwiOiJzdG9yZSJ9&signature=60cb43bb945543d7fdbd2662ae21d5c53e28529720263619cfebc3509e820807'
+          stub.post(store_path, {url: url}) { [403, {}, '[uuid=AF614DF7F9594A87] This action has been secured by the developer of this website. Error: The signature was not valid'] }
+        end
+
+        stubbed_connection = Faraday.new do |builder|
+          builder.adapter :test, stubs
+        end
+
+        subject.stub(:http_connection).and_return stubbed_connection
+
+        expect { subject.store_url url, expiry: 1394363896 }.to raise_error InkFilePicker::ClientError
+      end
+
+      it "handles server errors correctly" do
+        stubs = Faraday::Adapter::Test::Stubs.new do |stub|
+          store_path = subject.configuration.store_path + '?key=key&policy=eyJleHBpcnkiOjEzOTQzNjM4OTYsImNhbGwiOiJzdG9yZSJ9&signature=60cb43bb945543d7fdbd2662ae21d5c53e28529720263619cfebc3509e820807'
+          stub.post(store_path, {url: url}) { [502, {}, 'Bad Gateway'] }
+        end
+
+        stubbed_connection = Faraday.new do |builder|
+          builder.adapter :test, stubs
+        end
+
+        subject.stub(:http_connection).and_return stubbed_connection
+
+        expect { subject.store_url url, expiry: 1394363896 }.to raise_error InkFilePicker::ServerError
+      end
     end
   end
 
@@ -121,6 +151,36 @@ describe InkFilePicker::Client do
         stubs.verify_stubbed_calls
         expect(response['url']).to eq 'https://www.filepicker.io/api/file/WmFxB2aSe20SGT2kzSsr'
       end
+
+      it "handles client errors correctly" do
+        stubs = Faraday::Adapter::Test::Stubs.new do |stub|
+          store_path = subject.configuration.store_path + '?key=key&policy=eyJleHBpcnkiOjEzOTQzNjM4OTYsImNhbGwiOiJzdG9yZSJ9&signature=60cb43bb945543d7fdbd2662ae21d5c53e28529720263619cfebc3509e820807'
+          stub.post(store_path) { [403, {}, '[uuid=AF614DF7F9594A87] This action has been secured by the developer of this website. Error: The signature was not valid'] }
+        end
+
+        stubbed_connection = Faraday.new do |builder|
+          builder.adapter :test, stubs
+        end
+
+        subject.stub(:http_connection).and_return stubbed_connection
+
+        expect { subject.store_file file, 'image/png', nil, expiry: 1394363896 }.to raise_error InkFilePicker::ClientError
+      end
+
+      it "handles server errors correctly" do
+        stubs = Faraday::Adapter::Test::Stubs.new do |stub|
+          store_path = subject.configuration.store_path + '?key=key&policy=eyJleHBpcnkiOjEzOTQzNjM4OTYsImNhbGwiOiJzdG9yZSJ9&signature=60cb43bb945543d7fdbd2662ae21d5c53e28529720263619cfebc3509e820807'
+          stub.post(store_path) { [502, {}, 'Bad Gateway'] }
+        end
+
+        stubbed_connection = Faraday.new do |builder|
+          builder.adapter :test, stubs
+        end
+
+        subject.stub(:http_connection).and_return stubbed_connection
+
+        expect { subject.store_file file, 'image/png', nil, expiry: 1394363896 }.to raise_error InkFilePicker::ServerError
+      end
     end
   end
 
@@ -163,6 +223,20 @@ describe InkFilePicker::Client do
         stubs.verify_stubbed_calls
         expect(response).to be_true
       end
+
+      it "handles server errors correctly" do
+        stubs = Faraday::Adapter::Test::Stubs.new do |stub|
+          stub.delete(file_url + '?key=key') { [502, {}, 'Bad Gateway'] }
+        end
+
+        stubbed_connection = Faraday.new do |builder|
+          builder.adapter :test, stubs
+        end
+
+        subject.stub(:http_connection).and_return stubbed_connection
+
+        expect { subject.remove 'WmFxB2aSe20SGT2kzSsr' }.to raise_error InkFilePicker::ServerError
+      end
     end
 
     context "with secret" do
@@ -187,6 +261,20 @@ describe InkFilePicker::Client do
 
   describe "#stat" do
     let(:file_url) { 'https://www.filepicker.io/api/file/WmFxB2aSe20SGT2kzSsr' }
+
+    it "handles server errors correctly" do
+      stubs = Faraday::Adapter::Test::Stubs.new do |stub|
+        stub.get(file_url + '/metadata') { [502, {}, 'Bad Gateway'] }
+      end
+
+      stubbed_connection = Faraday.new do |builder|
+        builder.adapter :test, stubs
+      end
+
+      subject.stub(:http_connection).and_return stubbed_connection
+
+      expect { subject.stat 'WmFxB2aSe20SGT2kzSsr' }.to raise_error InkFilePicker::ServerError
+    end
 
     context "with secret" do
       it "includes policy and signature" do
