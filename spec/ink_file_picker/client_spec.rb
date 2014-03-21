@@ -33,6 +33,7 @@ describe InkFilePicker::Client do
 
         stubs.verify_stubbed_calls
         expect(response['url']).to eq 'https://www.filepicker.io/api/file/WmFxB2aSe20SGT2kzSsr'
+        expect(response.http_response).to be_a Faraday::Response
       end
     end
 

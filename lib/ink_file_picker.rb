@@ -10,6 +10,7 @@ module InkFilePicker
   autoload :Configuration
   autoload :FileHandle
   autoload :UrlBuilder
+  autoload :Response
   autoload :Client
   autoload :Policy
 
