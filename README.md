@@ -61,7 +61,10 @@ stat = client.stat url_or_handle_name
 dimentions = client.stat url_or_handle_name, {width: true, height: true}
 ```
 
+### Errors
 
+When making requests to the API errors may occur. `InkFilePicker::ClientError` or `InkFilePicker::ServerError` will
+be raised if we are getting 4xx or 5xx responses back from File Picker. All errors inherits from `InkFilePicker::Error`.
 
 
 ## Contributing
