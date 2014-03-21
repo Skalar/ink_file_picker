@@ -158,7 +158,7 @@ module InkFilePicker
 
       add_policy_to params, from: policy_attributes, ensure_included: {handle: file_handle.handle, call: options[:call]}
 
-      url = UrlBuilder.new(file_url: file_handle.url, action: options[:url_action], params: params).to_s
+      UrlBuilder.new(file_url: file_handle.url, action: options[:url_action], params: params).to_s
     end
 
     def add_policy_to(params, options = {})
