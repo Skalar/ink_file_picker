@@ -19,5 +19,6 @@ module InkFilePicker
     def parsed_body
       @parsed_body ||= JSON.parse http_response.body
     end
+    alias to_hash parsed_body
   end
 end
