@@ -170,7 +170,9 @@ module InkFilePicker
     def wrap_response_or_fail_unless_success!(response)
       case response.status
       when 200...300
-        Response.new response
+        Response.new(response).tap do |wrapped_response|
+          fail UnexpectedResponseError, response.body unless wrapped_response.valid?
+        end
       when 400...500
         fail ClientError.new response.body, response
       when 500...600

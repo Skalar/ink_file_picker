@@ -72,6 +72,23 @@ describe InkFilePicker::Client do
         expect { subject.store_url url, expiry: 1394363896 }.to raise_error InkFilePicker::ClientError
       end
 
+      it "handles timeout error on remote server correctly" do
+        response_body = "[uuid=D93D897C42254BFB] Invalid URL file http://vp.viseno.no/vp_image.php?type=create_project_letter_head&id=1378387&ts=20140413133631&source_mediatype_code=shoebox_hq&format=jpeg&resolution=300&relative=true&scale=bestfit - timeout"
+
+        stubs = Faraday::Adapter::Test::Stubs.new do |stub|
+          store_path = subject.configuration.store_path + '?key=key&policy=eyJleHBpcnkiOjEzOTQzNjM4OTYsImNhbGwiOiJzdG9yZSJ9&signature=60cb43bb945543d7fdbd2662ae21d5c53e28529720263619cfebc3509e820807'
+          stub.post(store_path, {url: url}) { [200, {}, response_body] }
+        end
+
+        stubbed_connection = Faraday.new do |builder|
+          builder.adapter :test, stubs
+        end
+
+        subject.stub(:http_connection).and_return stubbed_connection
+
+        expect { subject.store_url url, expiry: 1394363896 }.to raise_error InkFilePicker::UnexpectedResponseError
+      end
+
       it "handles server errors correctly" do
         stubs = Faraday::Adapter::Test::Stubs.new do |stub|
           store_path = subject.configuration.store_path + '?key=key&policy=eyJleHBpcnkiOjEzOTQzNjM4OTYsImNhbGwiOiJzdG9yZSJ9&signature=60cb43bb945543d7fdbd2662ae21d5c53e28529720263619cfebc3509e820807'

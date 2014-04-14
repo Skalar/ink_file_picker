@@ -37,4 +37,20 @@ describe InkFilePicker::Response do
       expect(subject.public_send name).to eq 'an answer'
     end
   end
+
+  describe "#valid?" do
+    context "valid JSON as body" do
+      it "is true" do
+        expect(subject).to be_valid
+      end
+    end
+
+    context "invalid JSON as body" do
+      let(:http_response_body) { '[uuid=D93D897C42254BFB] Invalid URL file http://vp.viseno.no/vp_image.php?type=create_project_letter_head&id=1378387&ts=20140413133631&source_mediatype_code=shoebox_hq&format=jpeg&resolution=300&relative=true&scale=bestfit - timeout' }
+
+      it "is false" do
+        expect(subject).to_not be_valid
+      end
+    end
+  end
 end

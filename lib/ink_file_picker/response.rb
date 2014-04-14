@@ -29,5 +29,12 @@ module InkFilePicker
     def parsed_body
       @parsed_body ||= JSON.parse http_response.body
     end
+
+    def valid?
+      body == 'success' ||
+      parsed_body
+    rescue JSON::ParserError
+      false
+    end
   end
 end
