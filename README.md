@@ -66,6 +66,9 @@ dimentions = client.stat url_or_handle_name, {width: true, height: true}
 When making requests to the API errors may occur. `InkFilePicker::ClientError` or `InkFilePicker::ServerError` will
 be raised if we are getting 4xx or 5xx responses back from File Picker. All errors inherits from `InkFilePicker::Error`.
 
+We may also fail with a `InkFilePicker::UnexpectedResponseError`. This happens when for instance you ask File Picker
+to download a URL, but the server for the given URL fails to respond within five(?) seconds. We will then get a 200 OK,
+but the body will reveal the timeout error in text and the UnexpectedResponseError is raised.
 
 ## Contributing
 
