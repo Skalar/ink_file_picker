@@ -2,6 +2,7 @@
 
 Ruby API client for Ink File Picker (known as filepicker.io).
 
+[![Build Status](https://travis-ci.org/Skalar/ink_file_picker.svg?branch=master)](https://travis-ci.org/Skalar/ink_file_picker)
 
 
 ## Installation
