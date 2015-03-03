@@ -71,6 +71,7 @@ be raised if we are getting 4xx or 5xx responses back from File Picker. All erro
 We may also fail with a `InkFilePicker::UnexpectedResponseError`. This happens when for instance you ask File Picker
 to download a URL, but the server for the given URL fails to respond within five(?) seconds. We will then get a 200 OK,
 but the body will reveal the timeout error in text and the UnexpectedResponseError is raised.
+Other download errors may also be in the response, for instance "Invalid response when trying to read from `http://some.url.com/here.jpg`.
 
 ## Contributing
 
