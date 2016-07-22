@@ -1,6 +1,6 @@
 # InkFilePicker
 
-Ruby API client for Ink File Picker (known as filepicker.io).
+Ruby API client for filestack.com. Previously known as Ink File Picker and filepicker.io.
 
 [![Build Status](https://travis-ci.org/Skalar/ink_file_picker.svg?branch=master)](https://travis-ci.org/Skalar/ink_file_picker)
 
