@@ -10,10 +10,10 @@ describe InkFilePicker::Configuration do
 
   subject { described_class.new attributes }
 
-  its(:key) { should eq 'key' }
-  its(:secret) { should eq 'secret' }
-  its(:default_expiry) { should eq 600 }
-  its(:cdn_url) { should eq 'https://www.filepicker.io/api/file/' }
+  it { expect(subject.key).to eq 'key' }
+  it { expect(subject.secret).to eq 'secret' }
+  it { expect(subject.default_expiry).to eq 600 }
+  it { expect(subject.cdn_url).to eq 'https://www.filepicker.io/api/file/' }
 
   describe "#initialize" do
     it "fails when no key is given" do

@@ -11,8 +11,8 @@ describe InkFilePicker::Policy do
     )
   end
 
-  its(:policy) { should eq 'eyJleHBpcnkiOjEzOTQzNjM4OTYsImNhbGwiOiJyZWFkIn0=' }
-  its(:signature) { should eq '4c50ca71d9e123274a01eb00a7facd52069e07c2e9312517f55bf1b94447792e' }
+  it { expect(subject.policy).to eq 'eyJleHBpcnkiOjEzOTQzNjM4OTYsImNhbGwiOiJyZWFkIn0=' }
+  it { expect(subject.signature).to eq '4c50ca71d9e123274a01eb00a7facd52069e07c2e9312517f55bf1b94447792e' }
 
   describe "#to_hash" do
     it "contains policy and signature when secret is given" do
