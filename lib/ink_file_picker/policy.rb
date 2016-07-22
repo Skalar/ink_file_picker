@@ -25,7 +25,7 @@ module InkFilePicker
 
 
     def to_hash
-      return {} if secret.blank?
+      return {} if Utils::Blank.blank? secret
 
       {
         policy: policy,
@@ -39,7 +39,7 @@ module InkFilePicker
       out = {}
 
       POLICY_ATTRIBUTES.each do |attr_name|
-        if value = self[attr_name] and value.present?
+        if value = self[attr_name] and !Utils::Blank.blank?(value)
           out[attr_name] = value
         end
       end

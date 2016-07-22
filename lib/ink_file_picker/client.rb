@@ -130,10 +130,12 @@ module InkFilePicker
     #
     # Returns Policy object
     def policy(attributes)
-      attributes.reverse_merge!(
+      defaults = {
         secret: configuration.secret,
         expiry: Time.now.to_i + configuration.default_expiry
-      )
+      }.freeze
+
+      attributes = defaults.merge attributes
 
       Policy.new attributes
     end

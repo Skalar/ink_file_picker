@@ -1,6 +1,13 @@
 require 'spec_helper'
+require 'uri'
 
 describe InkFilePicker::Client do
+  # Helper method, returns a hash represneting get query param
+  def query_to_hash(uri)
+    uri = URI.parse uri
+    Hash[uri.query.split('&').map { |name_value| name_value.split('=') }]
+  end
+
   let(:attributes) do
     {
       key: 'key',
@@ -344,17 +351,37 @@ describe InkFilePicker::Client do
       before { subject.configuration.secret = nil }
 
       it "builds expected convert URL when given a URL" do
-        expect(subject.convert_url url, w: 300, h: 200).to eq 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og/convert?h=200&w=300'
+        converted_url = subject.convert_url url, w: 300, h: 200
+
+        expect(converted_url).to start_with 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og/convert?'
+        expect(query_to_hash converted_url).to include({
+          "h" => "200",
+          "w" => "300"
+        })
       end
 
       it "builds expected convert URL when given a handle" do
-        expect(subject.convert_url handle, w: 300, h: 200).to eq 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og/convert?h=200&w=300'
+        converted_url = subject.convert_url handle, w: 300, h: 200
+
+        expect(converted_url).to start_with 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og/convert?'
+        expect(query_to_hash converted_url).to include({
+          "h" => "200",
+          "w" => "300"
+        })
       end
     end
 
     context "with secret" do
       it "builds expected convert URL when given a URL" do
-        expect(subject.convert_url url, {w: 300, h: 200}, expiry: 1394363896).to eq 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og/convert?h=200&policy=eyJleHBpcnkiOjEzOTQzNjM4OTYsImNhbGwiOiJjb252ZXJ0IiwiaGFuZGxlIjoiUEhxSkhIV3BSQUdVc0lmeXgwb2cifQ%3D%3D&signature=b370d4ae604c7917c169fe5b10a6274683bb82056c7b80993a7601d486b89d22&w=300'
+        converted_url = subject.convert_url url, {w: 300, h: 200}, expiry: 1394363896
+
+        expect(converted_url).to start_with 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og/convert?'
+        expect(query_to_hash converted_url).to include({
+          "h" => "200",
+          "w" => "300",
+          "policy" => "eyJleHBpcnkiOjEzOTQzNjM4OTYsImNhbGwiOiJjb252ZXJ0IiwiaGFuZGxlIjoiUEhxSkhIV3BSQUdVc0lmeXgwb2cifQ%3D%3D",
+          "signature" => "b370d4ae604c7917c169fe5b10a6274683bb82056c7b80993a7601d486b89d22"
+        })
       end
     end
   end

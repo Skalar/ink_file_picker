@@ -1,3 +1,5 @@
+require 'uri'
+
 module InkFilePicker
   # Public: Takes a file url, adds action to the path (if any), and includes params.
   class UrlBuilder
@@ -11,7 +13,7 @@ module InkFilePicker
 
     def url
       url = [file_url, action].compact.join '/'
-      url = [url, params.to_param].join '?' if params.any?
+      url = [url, URI.encode_www_form(params)].join '?' if params.any?
 
       url
     end

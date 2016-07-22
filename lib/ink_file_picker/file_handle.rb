@@ -18,7 +18,7 @@ module InkFilePicker
     private
 
     def build_url_from_handle
-      joins_with = cdn_url.ends_with?('/') ? '' : '/'
+      joins_with = cdn_url.end_with?('/') ? '' : '/'
       [cdn_url, handle].join joins_with
     end
 
