@@ -13,7 +13,9 @@ module InkFilePicker
       assign attributes
     end
 
-
+    def expiry=(epoch_or_time_object)
+      @expiry = epoch_or_time_object.to_i
+    end
 
     def policy
       Base64.urlsafe_encode64 policy_json

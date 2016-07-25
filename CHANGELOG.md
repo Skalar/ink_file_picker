@@ -1,5 +1,7 @@
 ## 0.0.4
 * Dropped ActiveSupport as a dependency. Should make life easier for everyone.
+* Expiry on the policy can be given as an object acting as Time, as long as #to_i
+  returns Epoch time.
 
 ## 0.0.3
 * Raise UnexpectedResponseError if we receive a 200 OK, but response body is neither "success", nor valid JSON.

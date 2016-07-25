@@ -22,6 +22,13 @@ describe InkFilePicker::Policy do
     it { expect(decoded['call']).to eq 'read' }
     it { expect(decoded['expiry']).to eq 1394363896 }
 
+    it "ensures expiry is a number" do
+      time = Time.parse("2016-01-01 00:00")
+      subject.expiry = time
+
+      decoded = JSON.parse Base64.urlsafe_decode64 subject.policy
+      expect(decoded['expiry']).to eq 1451602800
+    end
   end
 
   describe "#to_hash" do
