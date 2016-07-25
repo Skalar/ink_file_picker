@@ -23,7 +23,7 @@ describe InkFilePicker::Policy do
     it { expect(decoded['expiry']).to eq 1394363896 }
 
     it "ensures expiry is a number" do
-      time = Time.parse("2016-01-01 00:00")
+      time = Time.parse('2016-01-01 00:00:00 +0100')
       subject.expiry = time
 
       decoded = JSON.parse Base64.urlsafe_decode64 subject.policy
