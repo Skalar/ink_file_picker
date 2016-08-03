@@ -1,9 +1,14 @@
+require 'forwardable'
+require 'json'
+
 module InkFilePicker
   # Public: Simple decorator class for response.
   #
   # Decorates the response with hash like access to the
   # parsed body, which is expected to be JSON.
   class Response
+    extend Forwardable
+
     DELEGATE_TO_RESPONSE = %w[
       success? status headers body finished?
     ]
@@ -14,8 +19,8 @@ module InkFilePicker
 
     attr_reader :http_response
 
-    delegate *DELEGATE_TO_RESPONSE, to: :http_response
-    delegate *DELEGATE_TO_PARSED_BODY, to: :parsed_body
+    def_delegators :http_response,  *DELEGATE_TO_RESPONSE
+    def_delegators :parsed_body,    *DELEGATE_TO_PARSED_BODY
 
 
     def initialize(http_response)

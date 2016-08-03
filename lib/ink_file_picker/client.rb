@@ -12,7 +12,7 @@ module InkFilePicker
     # Public: Store a file from given URL.
     #
     # url                 - URL to resource
-    # policy_attributes   - If you use security policies you may send in for instance {expire: 10.minutes.from_now} here
+    # policy_attributes   - If you use security policies you may send in for instance {e: (Time.now + 60 * 10)} here
     #
     # Returns a hash representing the response where you can read for instance 'url'
     def store_url(url, policy_attributes = {})
@@ -33,7 +33,7 @@ module InkFilePicker
     # file_or_path        - File or path to file
     # content_type        - The file's content type
     # filename            - The file's name, optional
-    # policy_attributes   - If you use security policies you may send in for instance {expire: 10.minutes.from_now} here
+    # policy_attributes   - If you use security policies you may send in for instance {expire: (Time.now + 60 * 10)} here
     #
     # Returns a hash representing the response where you can read for instance 'url'
     def store_file(file_or_path, content_type, filename = nil, policy_attributes = {})
@@ -53,7 +53,7 @@ module InkFilePicker
     # Public: Removes a file from file picker.
     #
     # handle_or_url       - The handle or URL to the file
-    # policy_attributes   - If you use security policies you may send in for instance {expire: 10.minutes.from_now} here
+    # policy_attributes   - If you use security policies you may send in for instance {expire: (Time.now + 60 * 10)} here
     #
     # Returns boolean value
     def remove(handle_or_url, policy_attributes = {})
@@ -67,7 +67,7 @@ module InkFilePicker
     #
     # handle_or_url       - The handle or URL to the file
     # params              - Request params, like {width: true, height: true} to get width and height info. May be empty for default response
-    # policy_attributes   - If you use security policies you may send in for instance {expire: 10.minutes.from_now} here
+    # policy_attributes   - If you use security policies you may send in for instance {expire: (Time.now + 60 * 10)} here
     #
     # Returns hash of headers returned from file picker or false if request was unsuccessful
     def stat(handle_or_url, params = {}, policy_attributes = {})
@@ -79,7 +79,7 @@ module InkFilePicker
     # Public: Generates a you can use for removing an asset on file picker.
     #
     # handle_or_url       - The handle or URL to the file
-    # policy_attributes   - If you use security policies you may send in for instance {expire: 10.minutes.from_now} here
+    # policy_attributes   - If you use security policies you may send in for instance {expire: (Time.now + 60 * 10)} here
     #
     # Returns a URL to the converted image
     def remove_url(handle_or_url, policy_attributes = {})
@@ -90,7 +90,7 @@ module InkFilePicker
     #
     # handle_or_url       - The handle or URL to the file
     # params              - Convert params, like {w: 100, h:100}
-    # policy_attributes   - If you use security policies you may send in for instance {expire: 10.minutes.from_now} here
+    # policy_attributes   - If you use security policies you may send in for instance {expire: (Time.now + 60 * 10)} here
     #
     # Returns a URL to the converted image
     def convert_url(handle_or_url, params = {}, policy_attributes = {})
@@ -102,7 +102,7 @@ module InkFilePicker
     #
     # handle_or_url       - The handle or URL to the file
     # params              - Params to be added as get params, like {cache: true}
-    # policy_attributes   - If you use security policies you may send in for instance {expire: 10.minutes.from_now} here
+    # policy_attributes   - If you use security policies you may send in for instance {expire: (Time.now + 60 * 10)} here
     #
     # This method is not that usefull unless you have enabled security policy
     #
@@ -115,7 +115,7 @@ module InkFilePicker
     # Public: Generates a stat URL for a given file
     #
     # handle_or_url       - The handle or URL to the file
-    # policy_attributes   - If you use security policies you may send in for instance {expire: 10.minutes.from_now} here
+    # policy_attributes   - If you use security policies you may send in for instance {expire: (Time.now + 60 * 10)} here
     #
     # Returns a URL to the image you can do a HEAD request to in order to get stats
     def stat_url(handle_or_url, params, policy_attributes = {})
@@ -130,10 +130,12 @@ module InkFilePicker
     #
     # Returns Policy object
     def policy(attributes)
-      attributes.reverse_merge!(
+      defaults = {
         secret: configuration.secret,
         expiry: Time.now.to_i + configuration.default_expiry
-      )
+      }.freeze
+
+      attributes = defaults.merge attributes
 
       Policy.new attributes
     end

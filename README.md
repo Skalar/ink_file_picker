@@ -1,6 +1,6 @@
 # InkFilePicker
 
-Ruby API client for Ink File Picker (known as filepicker.io).
+Ruby API client for filestack.com. Previously known as Ink File Picker and filepicker.io.
 
 [![Build Status](https://travis-ci.org/Skalar/ink_file_picker.svg?branch=master)](https://travis-ci.org/Skalar/ink_file_picker)
 
@@ -49,12 +49,12 @@ response = client.remove url_or_handle_name
 ### Read operations
 ```ruby
 url = client.convert_url url_or_handle_name, w: 100, h: 100
-url = client.convert_url url_or_handle_name, {w: 100, h: 100}, expiry: 10.minutes.from_now.to_i
+url = client.convert_url url_or_handle_name, {w: 100, h: 100}, expiry: (Time.now + 60 * 10).to_i
 
 # Adds policy and signature, if secret given when client was created.
 get_params = {} # Get params we'll be adding to the request.
 url = client.retrieve_url url_or_handle_name
-url = client.retrieve_url url_or_handle_name, get_params, expiry: 10.minutes.from_now.to_i
+url = client.retrieve_url url_or_handle_name, get_params, expiry: (Time.now + 60 * 10).to_i
 
 
 # Get simple stat on a file, like the Javascript client

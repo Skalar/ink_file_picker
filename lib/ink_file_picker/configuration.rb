@@ -24,7 +24,7 @@ module InkFilePicker
     private
 
     def verify!
-      if key.blank?
+      if Utils::Blank.blank? key
         fail ArgumentError, "An API key must be provided"
       end
     end

@@ -1,6 +1,13 @@
 require 'spec_helper'
+require 'uri'
 
 describe InkFilePicker::Client do
+  # Helper method, returns a hash represneting get query param
+  def query_to_hash(uri)
+    uri = URI.parse uri
+    Hash[uri.query.split('&').map { |name_value| name_value.split('=') }]
+  end
+
   let(:attributes) do
     {
       key: 'key',
@@ -27,7 +34,7 @@ describe InkFilePicker::Client do
           builder.adapter :test, stubs
         end
 
-        subject.stub(:http_connection).and_return stubbed_connection
+        allow(subject).to receive(:http_connection).and_return stubbed_connection
 
         response = subject.store_url url
 
@@ -49,7 +56,7 @@ describe InkFilePicker::Client do
           builder.adapter :test, stubs
         end
 
-        subject.stub(:http_connection).and_return stubbed_connection
+        allow(subject).to receive(:http_connection).and_return stubbed_connection
 
         response = subject.store_url url, expiry: 1394363896
 
@@ -67,7 +74,7 @@ describe InkFilePicker::Client do
           builder.adapter :test, stubs
         end
 
-        subject.stub(:http_connection).and_return stubbed_connection
+        allow(subject).to receive(:http_connection).and_return stubbed_connection
 
         expect { subject.store_url url, expiry: 1394363896 }.to raise_error InkFilePicker::ClientError
       end
@@ -84,7 +91,7 @@ describe InkFilePicker::Client do
           builder.adapter :test, stubs
         end
 
-        subject.stub(:http_connection).and_return stubbed_connection
+        allow(subject).to receive(:http_connection).and_return stubbed_connection
 
         expect { subject.store_url url, expiry: 1394363896 }.to raise_error InkFilePicker::UnexpectedResponseError
       end
@@ -99,7 +106,7 @@ describe InkFilePicker::Client do
           builder.adapter :test, stubs
         end
 
-        subject.stub(:http_connection).and_return stubbed_connection
+        allow(subject).to receive(:http_connection).and_return stubbed_connection
 
         expect { subject.store_url url, expiry: 1394363896 }.to raise_error InkFilePicker::ServerError
       end
@@ -124,8 +131,8 @@ describe InkFilePicker::Client do
           builder.adapter :test, stubs
         end
 
-        subject.stub(:http_connection).and_return stubbed_connection
-        Faraday::UploadIO.stub(:new).and_return file_upload # Need same object, so request equals the stub
+        allow(subject).to receive(:http_connection).and_return stubbed_connection
+        allow(Faraday::UploadIO).to receive(:new).and_return file_upload # Need same object, so request equals the stub
 
         response = subject.store_file file, 'image/png'
 
@@ -142,8 +149,8 @@ describe InkFilePicker::Client do
           builder.adapter :test, stubs
         end
 
-        subject.stub(:http_connection).and_return stubbed_connection
-        Faraday::UploadIO.stub(:new).and_return file_upload # Need same object, so request equals the stub
+        allow(subject).to receive(:http_connection).and_return stubbed_connection
+        allow(Faraday::UploadIO).to receive(:new).and_return file_upload # Need same object, so request equals the stub
 
         response = subject.store_file path, 'image/png'
 
@@ -162,8 +169,8 @@ describe InkFilePicker::Client do
           builder.adapter :test, stubs
         end
 
-        subject.stub(:http_connection).and_return stubbed_connection
-        Faraday::UploadIO.stub(:new).and_return file_upload # Need same object, so request equals the stub
+        allow(subject).to receive(:http_connection).and_return stubbed_connection
+        allow(Faraday::UploadIO).to receive(:new).and_return file_upload # Need same object, so request equals the stub
 
         response = subject.store_file file, 'image/png', nil, expiry: 1394363896
 
@@ -181,7 +188,7 @@ describe InkFilePicker::Client do
           builder.adapter :test, stubs
         end
 
-        subject.stub(:http_connection).and_return stubbed_connection
+        allow(subject).to receive(:http_connection).and_return stubbed_connection
 
         expect { subject.store_file file, 'image/png', nil, expiry: 1394363896 }.to raise_error InkFilePicker::ClientError
       end
@@ -196,7 +203,7 @@ describe InkFilePicker::Client do
           builder.adapter :test, stubs
         end
 
-        subject.stub(:http_connection).and_return stubbed_connection
+        allow(subject).to receive(:http_connection).and_return stubbed_connection
 
         expect { subject.store_file file, 'image/png', nil, expiry: 1394363896 }.to raise_error InkFilePicker::ServerError
       end
@@ -218,12 +225,12 @@ describe InkFilePicker::Client do
           builder.adapter :test, stubs
         end
 
-        subject.stub(:http_connection).and_return stubbed_connection
+        allow(subject).to receive(:http_connection).and_return stubbed_connection
 
         response = subject.remove file_url
 
         stubs.verify_stubbed_calls
-        expect(response).to be_true
+        expect(response).to be_truthy
       end
 
       it "makes delete request with file handle name" do
@@ -235,12 +242,12 @@ describe InkFilePicker::Client do
           builder.adapter :test, stubs
         end
 
-        subject.stub(:http_connection).and_return stubbed_connection
+        allow(subject).to receive(:http_connection).and_return stubbed_connection
 
         response = subject.remove 'WmFxB2aSe20SGT2kzSsr'
 
         stubs.verify_stubbed_calls
-        expect(response).to be_true
+        expect(response).to be_truthy
       end
 
       it "handles server errors correctly" do
@@ -252,7 +259,7 @@ describe InkFilePicker::Client do
           builder.adapter :test, stubs
         end
 
-        subject.stub(:http_connection).and_return stubbed_connection
+        allow(subject).to receive(:http_connection).and_return stubbed_connection
 
         expect { subject.remove 'WmFxB2aSe20SGT2kzSsr' }.to raise_error InkFilePicker::ServerError
       end
@@ -268,12 +275,12 @@ describe InkFilePicker::Client do
           builder.adapter :test, stubs
         end
 
-        subject.stub(:http_connection).and_return stubbed_connection
+        allow(subject).to receive(:http_connection).and_return stubbed_connection
 
         response = subject.remove file_url, expiry: 1394363896
 
         stubs.verify_stubbed_calls
-        expect(response).to be_true
+        expect(response).to be_truthy
       end
     end
   end
@@ -282,15 +289,15 @@ describe InkFilePicker::Client do
     let(:file_url) { 'https://www.filepicker.io/api/file/WmFxB2aSe20SGT2kzSsr' }
 
     it "handles server errors correctly" do
-      stubs = Faraday::Adapter::Test::Stubs.new do |stub|
-        stub.get(file_url + '/metadata') { [502, {}, 'Bad Gateway'] }
+      stubs = Faraday::Adapter::Test::Stubs.new do |receive|
+        receive.get(file_url + '/metadata') { [502, {}, 'Bad Gateway'] }
       end
 
       stubbed_connection = Faraday.new do |builder|
         builder.adapter :test, stubs
       end
 
-      subject.stub(:http_connection).and_return stubbed_connection
+      allow(subject).to receive(:http_connection).and_return stubbed_connection
 
       expect { subject.stat 'WmFxB2aSe20SGT2kzSsr' }.to raise_error InkFilePicker::ServerError
     end
@@ -307,7 +314,7 @@ describe InkFilePicker::Client do
           builder.adapter :test, stubs
         end
 
-        subject.stub(:http_connection).and_return stubbed_connection
+        allow(subject).to receive(:http_connection).and_return stubbed_connection
 
         response = subject.stat file_url, {}, expiry: 1394363896
 
@@ -326,7 +333,7 @@ describe InkFilePicker::Client do
           builder.adapter :test, stubs
         end
 
-        subject.stub(:http_connection).and_return stubbed_connection
+        allow(subject).to receive(:http_connection).and_return stubbed_connection
 
         response = subject.stat file_url, {width: true, heigth: true}, expiry: 1394363896
 
@@ -344,17 +351,37 @@ describe InkFilePicker::Client do
       before { subject.configuration.secret = nil }
 
       it "builds expected convert URL when given a URL" do
-        expect(subject.convert_url url, w: 300, h: 200).to eq 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og/convert?h=200&w=300'
+        converted_url = subject.convert_url url, w: 300, h: 200
+
+        expect(converted_url).to start_with 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og/convert?'
+        expect(query_to_hash converted_url).to include({
+          "h" => "200",
+          "w" => "300"
+        })
       end
 
       it "builds expected convert URL when given a handle" do
-        expect(subject.convert_url handle, w: 300, h: 200).to eq 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og/convert?h=200&w=300'
+        converted_url = subject.convert_url handle, w: 300, h: 200
+
+        expect(converted_url).to start_with 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og/convert?'
+        expect(query_to_hash converted_url).to include({
+          "h" => "200",
+          "w" => "300"
+        })
       end
     end
 
     context "with secret" do
       it "builds expected convert URL when given a URL" do
-        expect(subject.convert_url url, {w: 300, h: 200}, expiry: 1394363896).to eq 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og/convert?h=200&policy=eyJleHBpcnkiOjEzOTQzNjM4OTYsImNhbGwiOiJjb252ZXJ0IiwiaGFuZGxlIjoiUEhxSkhIV3BSQUdVc0lmeXgwb2cifQ%3D%3D&signature=b370d4ae604c7917c169fe5b10a6274683bb82056c7b80993a7601d486b89d22&w=300'
+        converted_url = subject.convert_url url, {w: 300, h: 200}, expiry: 1394363896
+
+        expect(converted_url).to start_with 'https://www.filepicker.io/api/file/PHqJHHWpRAGUsIfyx0og/convert?'
+        expect(query_to_hash converted_url).to include({
+          "h" => "200",
+          "w" => "300",
+          "policy" => "eyJleHBpcnkiOjEzOTQzNjM4OTYsImNhbGwiOiJjb252ZXJ0IiwiaGFuZGxlIjoiUEhxSkhIV3BSQUdVc0lmeXgwb2cifQ%3D%3D",
+          "signature" => "b370d4ae604c7917c169fe5b10a6274683bb82056c7b80993a7601d486b89d22"
+        })
       end
     end
   end
@@ -405,19 +432,20 @@ describe InkFilePicker::Client do
     describe "expiry" do
       context "is given" do
         it "uses given value" do
-          InkFilePicker::Policy.should_receive(:new).with(hash_including(call: 'read', expiry: 60)).and_return policy
+          expect(InkFilePicker::Policy).to receive(:new).with(hash_including(call: 'read', expiry: 60)).and_return policy
 
           expect(subject.policy policy_attributes.merge(expiry: 60)).to eq policy
         end
       end
 
       context "not given" do
-        before { Time.stub_chain(:now, :to_i).and_return 1 }
+        let(:the_time) { double :time, to_i: 1 }
+        before { allow(Time).to receive(:now).and_return the_time }
 
         it "uses default_expiry from config" do
-          subject.configuration.stub(:default_expiry).and_return 600
+          allow(subject.configuration).to receive(:default_expiry).and_return 600
 
-          InkFilePicker::Policy.should_receive(:new).with(hash_including(call: 'read', expiry: 601)).and_return policy
+          expect(InkFilePicker::Policy).to receive(:new).with(hash_including(call: 'read', expiry: 601)).and_return policy
 
           expect(subject.policy policy_attributes).to eq policy
         end

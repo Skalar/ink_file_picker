@@ -11,8 +11,25 @@ describe InkFilePicker::Policy do
     )
   end
 
-  its(:policy) { should eq 'eyJleHBpcnkiOjEzOTQzNjM4OTYsImNhbGwiOiJyZWFkIn0=' }
-  its(:signature) { should eq '4c50ca71d9e123274a01eb00a7facd52069e07c2e9312517f55bf1b94447792e' }
+  it { expect(subject.policy).to eq 'eyJleHBpcnkiOjEzOTQzNjM4OTYsImNhbGwiOiJyZWFkIn0=' }
+  it { expect(subject.signature).to eq '4c50ca71d9e123274a01eb00a7facd52069e07c2e9312517f55bf1b94447792e' }
+
+  describe "the policy" do
+    let(:decoded) do
+      JSON.parse Base64.urlsafe_decode64 subject.policy
+    end
+
+    it { expect(decoded['call']).to eq 'read' }
+    it { expect(decoded['expiry']).to eq 1394363896 }
+
+    it "ensures expiry is a number" do
+      time = Time.parse('2016-01-01 00:00:00 +0100')
+      subject.expiry = time
+
+      decoded = JSON.parse Base64.urlsafe_decode64 subject.policy
+      expect(decoded['expiry']).to eq 1451602800
+    end
+  end
 
   describe "#to_hash" do
     it "contains policy and signature when secret is given" do
