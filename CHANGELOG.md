@@ -1,3 +1,6 @@
+## 0.0.5
+* Added support for Ruby 2.4. (by gudleik)
+
 ## 0.0.4
 * Dropped ActiveSupport as a dependency. Should make life easier for everyone.
 * Expiry on the policy can be given as an object acting as Time, as long as #to_i
