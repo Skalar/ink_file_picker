@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'time'
 
 describe InkFilePicker::Policy do
   let(:secret) { '6U5CWAU57NAHDC2ICXQKMXYZ4Q' }
